@@ -13,6 +13,7 @@ import cartRouter from './src/routes/cart.js';
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
+// app.use(JSON.parse());
 dotenv.config();
 
 app.use(helmet());

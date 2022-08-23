@@ -1,9 +1,10 @@
-import express from 'express';
+import express, { response } from 'express';
 import bcrypt from 'bcrypt';
 import Books from '../model/Books.js';
 import multer from 'multer';
 import fs from 'fs';
 import {verifyTokenAndAdmin, verifyTokenAndAuthorization, verifyToken} from '../helper/verifyToken.js';
+import { responseHelper } from '../helper/responseHelper.js';
 
 const router = express.Router();
 
@@ -21,15 +22,15 @@ const upload = multer({storage: storage})
 router.post('/add',verifyTokenAndAdmin,upload.single('image'), async (req,res) => {
     try{
         const newProduct = await new Books({
-            title:req.body.title,
-            desc:req.body.desc,
+            bookName:req.body.bookName,
+            bookDisciption:req.body.bookDisciption,
             image:{
                 data:fs.readFileSync('src/images/'+req.file.filename),
                 contentType:'image/jpg'
             },
             categories:req.body.categories,
-            color:req.body.color,
-            size:req.body.size,
+            rating:req.body.rating,
+            ratingCount:req.body.ratingCount,
             price:req.body.price
         })
         await newProduct.save();
@@ -44,19 +45,18 @@ router.post('/add',verifyTokenAndAdmin,upload.single('image'), async (req,res) =
 router.put('/:id', verifyTokenAndAdmin,upload.single('image'), async(req,res)=> {
     try{
         if(req.file){
-            const title = req.body.title
-            const desc = req.body.desc
+            const bookName = req.body.bookName
+            const bookDisciption = req.body.bookDisciption
             const image  = {
                 data: fs.readFileSync('src/images/'+req.file.filename),
                 contentType:'images/jpg'
             }
-            const color =  req.body.color
-            const size = req.body.size
             const price = req.body.price
-            
+            const rating = req.body.rating
+            const ratingCount = req.body.ratingCount
             const updatedBooks = await Books.findByIdAndUpdate(req.params.id, {
                 $set : {
-                    title, desc, image, color, size, price
+                    bookName, bookDisciption, image, rating,ratingCount, price
                 }
             })
             res.status(200).json(updatedBooks);
@@ -90,24 +90,26 @@ router.get('/find/:id',verifyTokenAndAdmin,async (req,res)=> {
 })
 
 //Get all Bookss
-router.get('/all-Bookss',verifyTokenAndAdmin,async(req,res)=> {
+router.get('/all-books',verifyToken,async(req,res)=> {
     const qNew =req.query.name
     const qCategories = req.query.categories;
     try{
-        let Books = [];
+        let books = [];
         if(qNew){
-        Books = await Books.find().sort({_id: -1}).limit(1) }
-        else if(qCategories){
-        Books = await Books.find({categories: {
-                $in:[qCategories]
-            }})
+            books = await Books.find().sort({_id: -1}).limit(1) }
+            else if(qCategories){
+                books = await Books.find({categories: {
+                    $in:[qCategories]
+                }})
+            }
+            else{
+            books = await Books.find();
         }
-        else{
-            Books = await Books.find()
-        }
-        res.status(200).json(Books)
+        res.status(200).send(responseHelper('ok', books))
+        console.log("response for client", books)
     }catch(err){
-        res.status(500).json(err.message)
+        res.status(402).json(err.message);
+        console.log("user id", err)
     }
 })
 

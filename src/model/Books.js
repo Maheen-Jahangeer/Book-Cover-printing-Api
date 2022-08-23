@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const Books = mongoose.Schema({
-    title: {
+    bookName: {
         type: String,
         unique: true
     },
-    desc: {
+    bookDisciption: {
         type: String
     },
     image: {
@@ -17,6 +17,12 @@ const Books = mongoose.Schema({
     },
     offer: {
         type: Number
+    },
+    rating:{
+        type:Number
+    },
+    ratingCount:{
+        type:Number
     }
 }, {
     timestamps: true

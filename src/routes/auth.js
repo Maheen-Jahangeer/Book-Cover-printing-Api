@@ -2,8 +2,10 @@ import express from 'express';
 import User from '../model/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
 const router = express.Router()
+dotenv.config();
 
 //register new user
 router.post('/register',async (req,res)=> {
@@ -33,8 +35,8 @@ router.post('/login',async(req,res)=> {
                 const accessKey = await jwt.sign({
                     id:user._id,
                     isAdmin:user.isAdmin
-                })
-                res.status(200).json({user, accessKey})
+                },process.env.JWTKEY)
+                res.status(200).json({user, accessKey});
             }else{
                 res.status(500).json('Passwords are incorrect')
             }
