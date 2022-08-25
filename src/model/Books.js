@@ -5,12 +5,11 @@ const Books = mongoose.Schema({
         type: String,
         unique: true
     },
-    bookDisciption: {
+    bookDiscription: {
         type: String
     },
     image: {
-        data: Buffer,
-        contentType: String
+        type:String
     },
     price: {
         type: Number

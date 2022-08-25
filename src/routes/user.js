@@ -6,7 +6,7 @@ import User from '../model/User.js';
 const router = express.Router()
 
 //update user
-router.put('/update/:id', verifyTokenAndAuthorization,async (req,res)=> {
+router.put('/update/:id',async (req,res)=> {
     try{
         if(req.body.password){
             req.body.password =await bcrypt.hash(req.body.password,10)
@@ -31,7 +31,7 @@ router.delete('/:id',verifyTokenAndAdmin,async (req,res)=> {
 })
 
 //Get user by id
-router.get('/find/:id',verifyTokenAndAdmin,async (req,res)=> {
+router.get('/find/:id',verifyToken,async (req,res)=> {
     try{
             const user = await User.findById(req.params.id)
             res.status(200).json(user)

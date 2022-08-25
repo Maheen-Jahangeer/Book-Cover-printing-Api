@@ -24,10 +24,7 @@ router.post('/add',verifyTokenAndAdmin,upload.single('image'), async (req,res) =
         const newProduct = await new Books({
             bookName:req.body.bookName,
             bookDisciption:req.body.bookDisciption,
-            image:{
-                data:fs.readFileSync('src/images/'+req.file.filename),
-                contentType:'image/jpg'
-            },
+            image:req.body.image,
             categories:req.body.categories,
             rating:req.body.rating,
             ratingCount:req.body.ratingCount,
@@ -80,12 +77,15 @@ router.delete('/:id',verifyTokenAndAdmin,async (req,res)=> {
 })
 
 //Get Books by id
-router.get('/find/:id',verifyTokenAndAdmin,async (req,res)=> {
+router.get('/find/:id',verifyToken,async (req,res)=> {
     try{
-            const Books = await Books.findById(req.params.id)
-            res.status(200).json(Books)
+            console.log('id', req.params.id)
+            const books = await Books.findById(req.params.id)
+            res.status(200).json(books);
+            console.log('books', books)
     }catch(err){
-        res.status(500).json(err.message)
+        res.status(500).json(err.message);
+        console.log('error',err)
     }
 })
 
@@ -105,7 +105,9 @@ router.get('/all-books',verifyToken,async(req,res)=> {
             else{
             books = await Books.find();
         }
-        res.status(200).send(responseHelper('ok', books))
+            // const {bookName} =  Books
+            const bookName = 'test book Name'
+        res.status(200).json(books)
         console.log("response for client", books)
     }catch(err){
         res.status(402).json(err.message);
