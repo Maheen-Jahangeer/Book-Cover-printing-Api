@@ -9,6 +9,9 @@ const User = mongoose.Schema({
         type: String,
         unique: true
     },
+    image:{
+        type:String
+    },
     password: {
         type: String
     },

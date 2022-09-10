@@ -108,7 +108,7 @@ router.get('/all-books',verifyToken,async(req,res)=> {
             // const {bookName} =  Books
             const bookName = 'test book Name'
         res.status(200).json(books)
-        console.log("response for client", books)
+        console.log("response for client", books);
     }catch(err){
         res.status(402).json(err.message);
         console.log("user id", err)
